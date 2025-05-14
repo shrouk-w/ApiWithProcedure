@@ -16,4 +16,6 @@ public interface IWareHouseRepository
     
     Task<float> GetPriceAsync(int id, CancellationToken cancellationToken);
     
+    Task<int> AddProductViaProcedureAsync(RequestAddProductDTO product, CancellationToken cancellationToken);
+    
 }

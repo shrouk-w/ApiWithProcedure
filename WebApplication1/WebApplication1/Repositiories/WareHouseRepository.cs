@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
 using WebApplication1.DTOs;
 using WebApplication1.Exceptions;
 
@@ -188,6 +189,38 @@ public class WareHouseRepository:IWareHouseRepository
 
                 return Convert.ToSingle(result);
             }
+        }
+    }
+
+    public async Task<int> AddProductViaProcedureAsync(RequestAddProductDTO product, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync(cancellationToken);
+
+            using var command = new SqlCommand("AddProductToWarehouse", connection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@IdProduct", product.IdProduct);
+            command.Parameters.AddWithValue("@IdWarehouse", product.IdWarehouse);
+            command.Parameters.AddWithValue("@Amount", product.Amount);
+            command.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+
+            var result = await command.ExecuteScalarAsync();
+            int newId = Convert.ToInt32(result);
+            return newId;
+        }catch (SqlException ex)
+        {
+            if (ex.Message.Contains("IdProduct does not exist"))
+                throw new NotFoundException(ex.Message);
+
+            if (ex.Message.Contains("IdWarehouse does not exist"))
+                throw new NotFoundException(ex.Message);
+
+            if (ex.Message.Contains("no order to fullfill"))
+                throw new ConflictException(ex.Message);
+
+            throw new Exception(ex.Message);
         }
     }
 }

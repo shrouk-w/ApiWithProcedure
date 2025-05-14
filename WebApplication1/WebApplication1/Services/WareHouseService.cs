@@ -48,5 +48,13 @@ public class WareHouseService : IWareHouseService
         var response = await _wareHouseRepository.AddProductAsync(argument, cancellationToken);
         return response;
     }
-    
+
+    public async Task<int> AddProductViaProcedureAsync(RequestAddProductDTO product, CancellationToken cancellationToken)
+    {
+        var response = await _wareHouseRepository.AddProductViaProcedureAsync(product, cancellationToken);
+        if(response<=0)
+            throw new NotFoundException("Product doesnt exist");
+        return response;
+    }
+
 }
