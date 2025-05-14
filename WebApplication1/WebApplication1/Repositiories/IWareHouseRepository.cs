@@ -13,4 +13,7 @@ public interface IWareHouseRepository
     Task<int> GetOrderIdAsync(int id,int amount,DateTime date, CancellationToken cancellationToken);
     
     Task<bool> DoesOrderExistAsync(int id, CancellationToken cancellationToken);
+    
+    Task<float> GetPriceAsync(int id, CancellationToken cancellationToken);
+    
 }

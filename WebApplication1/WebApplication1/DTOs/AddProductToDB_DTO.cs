@@ -4,7 +4,9 @@ namespace WebApplication1.DTOs;
 
 public class AddProductToDB_DTO
 {
+    public int IdOrder{ get; set; }
     
+    public float Price{ get; set; }
     public int IdProduct{ get; set; }
     
     public int IdWarehouse{ get; set; }

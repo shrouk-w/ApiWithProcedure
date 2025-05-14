@@ -30,14 +30,21 @@ public class WareHouseService : IWareHouseService
         
         if(await _wareHouseRepository.DoesOrderExistAsync(orderid, cancellationToken))
             throw new ConflictException("Order is already being proceeded with");
+
+        var price = await _wareHouseRepository.GetPriceAsync(product.IdProduct, cancellationToken);
+        if(price <= 0)
+            throw new ConflictException("Price is lesser than 0");
         
         var argument = new AddProductToDB_DTO()
         {
+            Price = price,
+            IdOrder = orderid,
             IdProduct = product.IdProduct,
             IdWarehouse = product.IdWarehouse,
             Amount = product.Amount,
             Date = DateTime.Now
         };
+        
         var response = await _wareHouseRepository.AddProductAsync(argument, cancellationToken);
         return response;
     }

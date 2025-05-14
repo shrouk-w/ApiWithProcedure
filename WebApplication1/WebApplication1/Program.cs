@@ -1,5 +1,7 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using WebApplication1.Repositiories;
+using WebApplication1.Services;
 
 namespace WebApplication1;
 
@@ -14,10 +16,9 @@ public class Program
         builder.Services.AddControllers();
         
         //registering dependencies
-        /*builder.Services.AddScoped<ITripsService, TripsService>();
-        builder.Services.AddScoped<ITripsRepository, TripsRepository>();
-        builder.Services.AddScoped<IClientsService, ClientsService>();
-        builder.Services.AddScoped<IClientsRepository, ClientsRepository>();*/
+        builder.Services.AddScoped<IWareHouseService, WareHouseService>();
+        builder.Services.AddScoped<IWareHouseRepository, WareHouseRepository>();
+        
         
 
         builder.Services.AddSwaggerGen(c =>
