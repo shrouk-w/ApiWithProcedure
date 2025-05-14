@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication1.DTOs;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers;
 
@@ -10,18 +11,18 @@ namespace WebApplication1.Controllers;
 public class WareHouseController: ControllerBase
 {
     
-    private readonly ITripService _tripService;
+    private readonly IWareHouseService _wareHouseService;
 
-    public WareHouseController(ITripService tripService)
+    public WareHouseController(IWareHouseService wareHouseService)
     {
-        _tripService = tripService;
+        _wareHouseService = wareHouseService;
     }
 
     [HttpPut]
     public async Task<IActionResult> AddProduct(AddProductDTO product)
     {
-        var response = await _tripService.AddProduct(product);
-        return Ok();
+        var response = await _wareHouseService.AddProduct(product);
+        return Ok(response);
     }
     
     
