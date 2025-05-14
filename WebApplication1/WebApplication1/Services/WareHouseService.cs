@@ -1,4 +1,5 @@
 ﻿using WebApplication1.DTOs;
+using WebApplication1.Exceptions;
 using WebApplication1.Repositiories;
 
 namespace WebApplication1.Services;
@@ -13,9 +14,32 @@ public class WareHouseService : IWareHouseService
         _wareHouseRepository = wareHouseRepository;
     }
 
-    public async Task<int> AddProduct(AddProductDTO product)
+    public async Task<int> AddProductAsync(RequestAddProductDTO product, CancellationToken cancellationToken)
     {
-        var response = await _wareHouseRepository.AddProduct(product);
+        
+        if(! await _wareHouseRepository.DoesProductExistAsync(product.IdProduct,cancellationToken))
+            throw new NotFoundException("Product doesnt exist");
+        
+        if(! await _wareHouseRepository.DoesWareHouseExistAsync(product.IdWarehouse,cancellationToken))
+            throw new NotFoundException("Warehouse doesnt exist");
+        
+        var orderid = await _wareHouseRepository.GetOrderIdAsync(product.IdProduct,product.Amount,DateTime.Now,cancellationToken);
+        
+        if(orderid<=0)
+            throw new NotFoundException("Order doesnt exist");
+        
+        if(await _wareHouseRepository.DoesOrderExistAsync(orderid, cancellationToken))
+            throw new ConflictException("Order is already being proceeded with");
+        
+        var argument = new AddProductToDB_DTO()
+        {
+            IdProduct = product.IdProduct,
+            IdWarehouse = product.IdWarehouse,
+            Amount = product.Amount,
+            Date = DateTime.Now
+        };
+        var response = await _wareHouseRepository.AddProductAsync(argument, cancellationToken);
         return response;
     }
+    
 }

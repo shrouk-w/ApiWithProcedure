@@ -4,5 +4,5 @@ namespace WebApplication1.Services;
 
 public interface IWareHouseService
 {
-    Task<int> AddProduct(AddProductDTO product);
+    Task<int> AddProductAsync(RequestAddProductDTO product, CancellationToken cancellationToken);
 }

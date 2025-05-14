@@ -19,9 +19,9 @@ public class WareHouseController: ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> AddProduct(AddProductDTO product)
+    public async Task<IActionResult> AddProductAsync(RequestAddProductDTO product,CancellationToken cancellationToken)
     {
-        var response = await _wareHouseService.AddProduct(product);
+        var response = await _wareHouseService.AddProductAsync(product, cancellationToken);
         return Ok(response);
     }
     
